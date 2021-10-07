@@ -1,0 +1,72 @@
+✔server.js recap 
+
+✨서버= 항상 인터넷에 연결되어있는 컴퓨터로  request를 듣고(listenting)있다 
+
+import express from "express";
+👉 node_modules의  express에서  import해주는데 
+node~라고 작성해주지 않는 이유는  npm이 알아서 찾아가기 때문
+
+const app= express();
+👉app에  express() 함수를 할당해주면  app이 express application을 
+사용할 수있게끔 되어서, 내부의 메소드들을 사용할 수있음  
+
+const port=4000;: 포트 번호 
+🤔port번호 사용이유?
+👉컴퓨터에 다양한 포트가 있는데, 모든 포트에 접근할 수없으므로 포트번호를 지정해줌
+
+const handelListenig=()=> console.log(`✨ Server listenting on port http://localhost:${port} 💚`);
+app.listen(port,handelListenig);
+그런데 여기서  app은 우리가 지정한  port 번호의  request만 듣고있고 
+request가 발생시,listen내부의  콜백함수를 실행한다 . 그런데 서버는  listenting을 시작하면 
+계속  listen해주고 있음 
+
+✨HTTP methods 
+1)GET 
+: 가장 기본적인  METHOD로 브라우저가 기본적으로 하는일 
+👉웹사이트 이용시, 브라우저가 사용자가 이용할 서버를  GET해주는것 
+app.get()을 통해서 누군가가 get할시 서버가 어떻게 반응을할지 
+설정해준다  
+ app.get(route,fnc)
+ route:url 
+ fnc : handler
+ 👉그런데  handler에서  response를해주지않으면 
+ 브라우저는 로딩만한다. 그래서  handler가 되는 함수는 
+ response를 해주어야하므로 무언가를 return해주어야만한다
+
+ ✔router recap
+
+ 🤔왜 router을 쓰는거지? 
+ 👉url 을 그룹화, 단순화, 독립 시켜주기위해서 
+ (🤔 더많은 이유가 있을까? )
+ (🤔url을 독립화 하는데 이유가 있을가?)
+:url을 정리해 주지 않으면  url이 미친듯이 길어지는 사태가 생김 
+✔url이 어떻게 시작하는지(공통시작부분을 기반으로  url정리)에 따라 나누는 방법=router 
+
+-파일명 
+../=현재의 파일위치에서 벗어나는 것을의미 
+./= 지금의 파일위치
+
+✔router  정리 
+/user/:id -> see user
+👉':id'= 파라미터나 인자라고도 불리기도하며 
+이를 통해서 url에 변수를 넣을 수있게 끔 도와준다 
+/user/(강의에 해당되는 숫자)의 형태로  url이 진행되도록한다 
+그래서 이와같이 ':id'혹은':potato'(id든 potato든 이름의 경우 마음대로 정할 수있다)
+로  설정을 해줌으로서 매번 사용자나 강의가 변경될시 라우터를 변경해주지 않아도 
+괜찮도록 진행해주는데 ':'표시가 :id가 변수임을 이야기해준다 
+
+✔ pug error
+1)pug에서 파일을 찾기 어려워하는 에러가 발생함
+그런데 그 에러의원인은 결국 express의 디폴트 설정이 원인으로 
+cwd+/views에서 찾아서 생긴결과 cwd는 현재 작업다이렉토리로 
+
+ C:\Users\user\OneDrive\바탕 화면\youtubecolne
+ 이러한 위치인데 우리는 그뒤에 \src가 추가적으로 와야하는 상황 
+ 👉그 원인은 현재 작업다이렉토리가  서버를 기동하는 파일의 위치에 따라서 결정되는데 
+ 어디서 nodejs를 부르고 서버를 시작하는지에 따라 결정됨, 그런데 그 일을 package.json이 진행하고 
+ 이 진행하고있어 C:\Users\user\OneDrive\바탕 화면\youtubecolne와같은 위치가 
+ 등장하게되는 것 
+
+ ✔template에서 array를 이용하는 each in 
+ 전제조건: template에서는 array인 변수가 존재해야한다
+ 

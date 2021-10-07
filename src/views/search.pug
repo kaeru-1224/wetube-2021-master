@@ -1,0 +1,13 @@
+extends layout.pug 
+include mixin/video
+
+
+block content
+    form
+        input(type="text" name="keyword" required  placeholder="search by title" ) 
+        input(type="submit",value="find")
+    div
+        each video in videos 
+                +video(video)
+        else  
+            h1 Sorry doesnt exists!

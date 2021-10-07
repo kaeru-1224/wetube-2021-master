@@ -1,0 +1,360 @@
+3.0-3.4 
+1. express application
+
+-Make express application!
+const app = express() ;
+express()를 통해서  express application을 생성해준다  
+-> 생성된 express application인 app은 이제 request를  listen 할 수있다
+
+-listen 함수의 경우 port번호와 콜백함수를인자를 지니고 있다 
+listen내의 콜백함수는 서버 연결시 실행되는 함수 이다. 
+app.listen(port번호, 콜백함수); 
+
+
+2.Get Request 
+-Response GET request!
+1)Cannot GET/ 
+-GET:HTTP METHOD 로 page를 가져다 주는 역할을 한다
+-유저가 사이트에 접근시 브라우저가  HTTP request를 만들어줌
+Cannot GET/ == root 페이지에 접근을 할 수없다 
+2) What is request? 
+-유저가 서버에 뭔가를 요청하거나 보내는 등의행동 
+3)Using express in GET request !
+get():주소와 콜백함수를 인자로 지님 
+app.get(주소,콜백함수 )
+ 👉하지만 이러한 경우 get request에대해서 응답이 가능하지만, 받아만 줄뿐 더이상의 일을하지 않아서
+계속 로딩만 되는 일이 발생하게됨 그래서 우리는  response를 해주거나 send ,end등의 일을 해주어야함
+
+
+-4.0-4.8
+-route  
+역할: 컨트롤러와 url 관리를 용이하게해준다 
+1) 라우터를 도메인 별로 나누어서 진행해주면, 작업하기에 용이함 
+ /login과 /search 역시 루트에 가까운 페이지지만  라우터가 될 수 있다 
+-global router: 홈에서 바로 이동 할 수있는  라우터들 
+주로 바로 들어가야하는 메인 url들이 이에 해당된다 (로그인창이나 검색창과 같이 크고 중요한 기능들) 
+
+router 는 express.Router();를 통해 시작하고,  use메소드를 통해 이용해준다 `
+const videoRouter= express.Router();
+const handleHome=(req,res)=>{res.send("handle home")}
+app.use("/videos",videoRouter)
+라우터가  get을통해서  /videos에 해당되면서 /watch나 /edit이 붙은 애들로 이동시 
+콜백함수가 작동하도록함
+videoRouter.get("/watch",handleHome)
+ 라우터가 많아질수록 코드는 복잡해지니, 코드를 정돈해서 진행 각 라우터 별로 별도의  js 파일을
+ 만들어서 진행 , 파일을 만들어 진행하는 경우 각 파일은 서로 분리된 모듈이므로 서로 import export하는 
+ 작업이 추가적으로 필요하다. 
+ 동시에 라우터와 컨트롤러는 결국 같은 일을 하지만 다른 기능을 지니고 있으므로, 파일을 분리해서 사용해
+ 주는 것이 용이함 
+
+
+✔import and export 
+1) 무언가를  import 하기위해서는  express가 선행되어야한다 
+2)각 폴더의  js 파일은 독립되어있으므로, 각 파일간 공유하4)려면 무엇을 
+공유할지   정해주어야한다 
+
+👉그 파일 내에서 하나만 공유를 하고 싶은경우  default로 진행해주어야한다
+만약 파일내에서만 하나만 공유하고 싶은경우 default 로 
+아닌 경우에는  변수명 앞에  export를 작성해주어여한다 
+
+export const apple=()=>{};
+
+이렇게 진행되는경우 여러개  export가능, 
+import{ 이름} form"위치" 식으로 진행을 해주면 가능, 대신 이름을 적어줄경우 
+우리가 이전에 사용했던 변수 명을 그대로 사용해주어야한다
+(default랑 일반 차이점 공부더하기~~~ )
+3) 변수명에  export를 달아주는 경우 1개 이상을 공유할 수있다 
+대신 변수명에  export를 해주는 경우 변수명을 그대로 사용해주어야지,  nodejs가 
+내가 사용할 변수가 무엇인지 잘 알고 있는 상태가됨 
+
+
+
+- router.param 
+videoRouter.get("/:id",watch);
+라우터 내에서 /:id는 파라미터라고 불린다,이를 통해  url에 변수를 포함 시킬수 있게함 
+파라미터가 없는 경우 라우터를 일일이 만들어주어야 할 수도 있음 :id를 통해서 
+route에게 id가 파라미터임을 알려줌 
+그래서 /vidoes/1212에 접근하면express는req.params를 출력시 {id:1212}로 형태로 값을 제공해줌
+":"가 파라미터임을 알려주는 용도, 문자만 id만 작성할 시에는 그냥  id 문자만 들어가게됨 
+
+videoRouter.get("/:id",watch);
+videoRouter.get("/upload",watch);
+그런데  express역시 위에서 아래로 읽어가는 형태 이므로, id 밑으로 upload가 오게되면 위치상 
+upload역시 id로 인식할 수있기때문에  id의 자료형을 정해주거나, 위치상 주의해주어야함
+
+
+-5.0-5.5 pug 
+1) 계속해서  html 을 적어주어야한다는 문제점의 발생 
+
+const handleHome=(req,res)=>{res.send("handle home")}
+현재까지는 위와같은 코드로  response 시에 문자열만 리턴해주는 방식으로 진행되어 왓음 
+그래서 그곳에  html을 바로 적어주는 방법이 존재함, 하지만 문제라하면
+ 매번 다른 컨트롤러에 각 html긴 문장을 일일이 
+적어주어야한다는 문제점이 발생하게됨 , 그리고 매번 같은 작업을 해주어야한다는 문제점이 존재함 
+
+2) 해결방법->  pug를 이용 
+-pug:템플릿 엔진으로  템플릿을 통해서 뷰를 만드는 것을 도움 
+
+1) npm i pug를 통해서  pug를 인스톨해주고  express.set()을 이용해주는데,  set의 경우 뷰 엔진을 설정할 수있음 
+app.set("view engine","pug")
+위의코드처럼 우리는 view engine을  set해줄 건데 그게 바로  pug 임을 set 설정해줌 
+-> 이후  express는 views 폴더 내의 파일을 찾는데, 그 views는 어플리케이션 뷰에대한 디렉토리나 그 배열을 담고 잇음 
+그런데  express의 디폴트는 현재 작업하는 디렉토리에서  /views 폴더로 가므로, 만약 사이에 다른 파일이 있는 경우 추가 작업을 해주어야함
+
+기본설정을 변경해주어야하는 경우 밑의 코드를 추가해주어야함
+app.set("views",process.cwd()+"/src/views")
+위의 코드를 통해서  views를 찾는데  crruent working directory(cwd) -현재 작업 디렉토리에서  "/src/views"라는 디렉토리/폴더를 찾아줌 
+/home/didi/바탕화면/wetube-2021-master이러한 루트 파일은 서버를 기동하는 파일의 위치에 따라 결정되는데,
+그건바로  node.js를 실행하는 디렉토리가됨(왜???)
+그래서  서버경우 pacakge.json이  src외부에서 진행을 해주므로, 위와같은 결과가 나오게됨 
+
+
+
+2) using pug! 
+- 모두 소문자로 작성해준다 
+-속성의 경우 (...) 안에 작성해준다 
+-모든건 부모 속성 보다 안쪽에 있어야하는데, 띄어쓰기와 탭을 함께쓰면 에러가남..응 .. 
+-pug에서 변수 사용을하거나 자바스크립트를 이용하는 경우 #{} 를 이용해주어야한다 
+- 변수 이용시에  const handleHome=(req,res)=>{res.send("handle home",{변수명: 변수에 들어갈것})}의 방향으로 작성해줌
+-파일명에 대문자나 띄어쓰기를 지양할것 
+
+
+3) 유저가  pug를 어떻게 보는걸까?
+res.render(view의 이름) 을 넣어 view의 이름에 해당하는  pug를 랜더링해줌 
+(q. 렌더링한다는건 뭐지?-> 코드를 우리가 보는 일반적인 모습으로 바꿔주는 과정?)
+
+4)pug가 용이한이유 
+-말끔한  html을 사용할수 있도록함 
+- 레이아웃을 미리 만들어서, 반복을 방지해줌 
+( 반복을 방지하려면 어떤식으로 해야할까? partials를 이용해보자!)
+
+5)partials? 
+예를 들어 계속해서 반복되는  footer을 
+footer &copy; #{new Date().getFullYear()} wetube
+위와같은 코드로 작성해주고 그것만    includes해서 반복을 방지해줌
+-includes는 다른 파일을 포함 시켜줌 
+    include partials/footer.pug
+위의 코드로 적어서 진행  
+
+6) 상속 
+-레이아웃 베이스 등을 만드는데 용이함 
+extends layout.pug 
+extends뒤에 파일명을 붙여서 사용,
+베이스 파일을 그대로 가져와서, 그 파일에 추가적인 작업을 해서 사용
+
+7) block 
+-block은 템플릿의 창문과 유사, 결국 무언가를 채워 놓을수 있는 공간  
+
+        main
+            block content
+위의 코드의 경우  main 이라는 부모 클래스에  block content를 자식을 넣어준건데,
+이를 통해서  contet를 위한 공간이 만들어지게된다
+그리고 그것을 이요하기위해서는 
+block content
+        each videoitem in videos
+위와같은 코드로 block content를 작성후 그 블록내에 원하는 컨텐츠의 내용들을 넣어주면된다 
+
+
+-5.7-6.6 
+1) -pug에서의 conditional 
+#{}와 h1=변수명 의 차이 
+후자의 경우 =를 통해 변수명이 일반 단어가 아닌 변수명임을 인식시켜주고동시에 h1=pageTitle의 경우 h1이 오직 pageTitle의 값을 지닌다는 것을 
+확인할 수있다. 
+다른 단어와 함께쓰는 경우 전자로 이용해 주는 것이 용이함 '#{변수명 } 일반 텓스트'의 형태일때 사용 
+
+6.0 
+(6.0은 정리되어있음~ )
+6.1)url- 절대 경로 상대 경로 (추가 정리 필)
+-absoulte (형태:/~)
+:현재 위치와 무관하게 root경로 +/~)
+-> 예를 들어서  localhost:4000/apple/edit-profile/1234 의 상태에서  a(href="/pear") 이라하면
+localhost:4000/pear으로 이동되는거 
+
+-relative (형태:'/' 없이 작성)
+:페이지에대한 경로 일부만 표시
+(? 그래서 정확히 뭐라는거지...)
+
+-> 예를 들어서  localhost:4000/apple/edit-profile/1234 의 상태에서  a(href="pear") 이라하면
+ localhost:4000/apple/edit-profile/pear으로 이동되는거 ,
+
+ (그러면끝만 바뀌는건데 둘의 차이는 뭐지?)
+
+6.2)post
+-Using form 
+1) form - action/method
+-action: url 을 보내줄 위치 
+-method: HTTP method
+(ACTION을 생략하는 경우 같은  URL로 보내주고  METHOD를 생략하는 경우 디폴트 값이  GET 메소드인 것같음: 확인 필요)
+1)-2 GET&POST
+get: 검색시에 주로 사용 ( 존재하는 자원에대한 요청)
+post: 데이터 베이스 내의 값을 바꿔주는 경우에 주로 사용
+
+1)-3 Post
+라우터 변수.post(path,func)
+->기존에  get 사용했던 방식과 큰차이x 
+
+6.3)Using post 
+-코드 줄이기 
+
+videoRouter.get("/:id(\\d+)/edit",getEdit)
+videoRouter.post("/:id(\\d+)/edit",postEdit)
+
+->videoRouter.route("/:id(\\d+)/edit").get(getEdit).post(postEdit);
+
+1) res.redirect("PATH") 
+-브라우저가 자동으로 이동하도록함
+
+2) form으로 부터 정보 얻기
+-req.body- req.urlencoded
+1)urlencoded()
+-일종의 미들웨어! 
+-object 형태로 form 의 데이터를 준다 (찾아봐야할듯 )
+사용예제
+ app.use(express.urlencoded({extended:true}));
+https://expressjs.com/ko/api.html#express.urlencoded
+(extended:true <- 찾아보기 )
+
+
+
+-6.11 call back and async  
+1)callback 
+-동작원리 
+{}로 인해 모든 파일종류의 파일을 찾음
+Video.find({},(error,videos)=>{console.log("error",error) console.log("videos",videos)})
+-> 하지만 자바 스크립트는 순서대로 처리 되는데 , find의 경우에는 데이터 베이스와 연결이 되어야하니
+까 , 순서대로 출력이되는게 아니라 연결후- 출력이된다는 이야기? 
+2)await and async 
+->  추가 공부
+3) return의 목적 
+(render한것은 다시한번  render 불가능(왜))
+-return은  필수가 아니라 , 현재는 함께사용해주는 함수를 신경쓰자?
+
+-string을 콤마로 받고  split을 통해서 array를 만들어 줄 수있음 
+
+-데이터 타입을 미리 정해주면서, 몽구스가 데이터 작성시 
+데이터를 정리해주는 역할을 해줌 
+
+-데이터를 넘겨주는 것에서 추가적으로 저장해주는 일을 해주어야함
+
+-moongose 에서 create와 save의 차이는 뭐지?
+
+
+- 비밀번호 해싱하기 
+
+ hashing  and bcrypt
+ 
+
+ $or 
+
+ status code 
+ -> render이 잘되면 200이보통가게된다~
+
+ 쿠키~
+ 쿠키와 세션 
+ 1) 세션 
+ 백엔드에서 브라우저간에 어떤활동을했는지 기억을하는것 
+
+ -stateless<- 기억력이 ㄴㄴ 
+ ->요청이 처리되면, 백엔드역시 연결이 끊김(계속 유지되지 x)
+    쿠키에 세션 아이디(번호표 같은칭구 )기록 통해서 기억
+( 쿠키확인칭구= 세션 미들웨어)
+
+
+ get->render-> 연결끝 
+ :그래서 이런걸 기억해주기위해, 유저가 로그인시에 유저에게 어떤 텍스트를 줘야함
+
+ -locals.obj를 통해서 pug와 함께함 
+
+
+ //알게된거 
+
+ -  유저수정시에 세션에 유저 정보가 있고 미들웨어를 통해  locals와 연결되어있으므로 추가 작업업이 
+ 기존의  locals 에 있는걸 데려올수 있다 
+그런데 만약 로그인되어있지 않은 사용자가  edit를 들어갈경우 에러 발생
+
+ 로그인한경우-> 그대로 진행, 아닌 경우 리데이렉트를 해주었는데 리다이렉션 횟수가 너무 많았다는 에러 발생
+ 왜 나는거지?
+
+ //삭제 시에 팝업창이 나오면 좋을것같아서 그냥  window 가되겟지하고 햇는데 계속 언디파인인가 
+ 나와서 확인을 해보니까 ,노드에는   confrim  기능이 업다는 거였고 
+유사한 readline을 이용해도 괜찮다는 글을 발견하게 되었다 
+
+
+//변경을하려고  post를 하니까,username이 정의가 안되어있다나옴
+-> 원인은 미들웨어로 로그인이되어있는경우 이동할수있고 안되어있는 경우 홈으로 가는 것을 
+해놓지않아서 그런데 왜그게 원인이된거지? 
+
+
+//이메일 업데이트는 되는데, 그 업데이트된게 프론트엔드로 보이지 않는 문제발생  
+
+
+1006 
+
+multer : 파일을 업롣 하도록 도와줌
+사용법 
+--->  form 을  multipart form으로 만들어 주어야함
+form(method="POST",enctype="multipart/form-data")
+--> form 이 다르게  encode 될것이다라는 의미 
+(? 그러면 원래는 어떻게  encode가 되는거지? )
+enctype= encoding type
+
+1)mulyer  설정시 사용자로 부터 받은 파일을 어디에 넣을지 결정 
+--> 1차적으로 하드드라이브에 저장하기로 하고, 업로드 폴더를 지정 
+2) 미들웨어를  route에 지정 
+(왜 컨트롤러가 아니라  route ?)
+3) multar은  input으로  avatar을 받아서 uploads에 폴더에 저장해준 후에 그 정보를  postedit에 전달해주게됨
+uploadFiles.single("avatar")를 통해서  input에서 오는  avatar 파일을 가지고 파일을 업로드, 폴더에 저장 
+(single은 파일 하나)
+-> 이후  req.file이 추가됨
+
+! 문제 
+- 파일업로드시에 file이 콘솔에 출력이 안되는 문제 발생 
+그런데 다른에러가 보이지 않아서, 혹시 몰라  pug에 사용가능한 파일 설정 부분을 수정해야히자 않을까해서 
+ accrpt=".png,.jpg,.jepg" 로 수정하니 진행됨 
+
+ ! 만약 사진 업로드 없이 진행이된다면? 
+ path가 없기 때문에  Cannot read property 'path' of undefined라고 오류가 나게됨 그건  file 이없으니까  path가 없게된것 
+
+ db에 파일을 저장하지 말고 폴더에 저장!!!!!
+ db에는 파일의 위치만 저장할것  
+ 왜?? 털려서?????? 
+
+ !  파일위치가 상대 경로로 되므로/ 를 붙여서 절대 경로로 해주었는데도 
+ 업로드한 파일이 보이지않는다? 왜지? --> 결국  url 이닉아 라우터 도 설정을 해줘야하는거
+
+
+ -챌린지때문에 갑자기 프론트앤드로 점핑됨 ....  
+ - 웹팩(web pack)
+ --> 사용자가 주는  최신 코드의 파일을 받아서 브라우저가 잘 인식할 수있는 기존의 js로 바꿔줌 (바벨하고 유사한 역할인건가?)
+jpg ==>압축된  jpg로 바꿔주는 방식, 
+
+//entry: 사용자가 처리하고자하는 파일 
+//client 폴더의 파일은 브라우저에서 실행될예정인, 프론트앤드 코드들 넣어줌 
+
+module.exports={
+    //변경하고자하는 파일
+    entry:"./src/client/js/main.js",
+    //output:결과값
+    //filename: 파일명
+    //path: 저장할장소
+    output:{
+        filename:"main.js",
+        path:"./assets/js"
+    }
+
+}
+
+! 그런데  webpack은 절대 경로를 요구한다는 에러가 발생, 즉 파일 하나의 전체 경로를 요구하는 에러가 발생하게됨 
+그래서 파일 전체 경로를 알려주는 __dirname를 이용
+
+console.log(path.resolve(__dirname,"assets","js"));
+위의 코드를 이용해서 전체 경로를 만들어줌 resolve 내용 확인해보면좋을듯
+
+
+-서버 프론트 동시에 해주어야함
+
+
+//pakage.json을 조금더 짧게 만들어주고 무시할 파일을 설정해줌
+
+
+ "assets": "webpack 이라 스크립트를 만들어주면 알아서  con fig를 찾음 

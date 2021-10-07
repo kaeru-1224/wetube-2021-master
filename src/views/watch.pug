@@ -1,0 +1,11 @@
+extends layout.pug 
+
+
+block content
+    video(src="/"+video.fileUrl,controls)
+    div
+        h3=video.title
+        small=video.description
+    a( href = `${video.id}/edit`) Edit Video &rarr;
+    hr
+    a( href = `${video.id}/delete`) Delete Video &rarr;

@@ -1,0 +1,40 @@
+//기존의  html양식이 반복되기 때문에 layout을 만들어 상속해주는 방식으로 이용
+doctype html 
+html(lang="ko")
+    head 
+        title #{pageTitle} | Wetube
+        link(rel="stylesheet" href="https://unpkg.com/mvp.css")
+        link(rel="stylesheet" href=`/static/css/styles.css`)
+
+    body
+        header
+            h1=pageTitle
+            nav
+                ul
+                    li
+                        a(href="/") Home
+                    if loggedIn
+                        li 
+                            a(href="/user/edit") Edit profile
+                        li 
+                            a(href="/logout") log out 
+                        li 
+                            a(href="/my-profile") #{loggedInUser.name}'s  profile
+                    else 
+                        li
+                            a(href="/join") join
+                        li
+                            a(href="/login") login
+                    li
+                        a(href="/search") search
+                        
+                    
+                    li
+                        a(href="/video/upload") upload
+                   
+
+        main
+            block content
+    include partials/footer.pug
+    //app.use("/static",express.static("assets")) <- 이거때문에 아래와같이 스크립트를 이용해줄 수있다
+    script(src="/static/js/main.js") 

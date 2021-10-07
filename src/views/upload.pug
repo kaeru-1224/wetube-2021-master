@@ -1,0 +1,13 @@
+extends layout.pug 
+
+
+block content
+    if errorMessage
+        span=errorMessage
+    form(method="POST",enctype="multipart/form-data")
+        label(for="video") Vidoe File
+        input(type="file", id="video" name="video", required,accept="video/*")
+        input(placeholder="Title",required,type="text",name="title")
+        input(placeholder="Description",required,type="text",name="description")
+        input(placeholder="hashtag,separated by comma",required,type="text",name="hashtags")
+        input(type="submit",value="Upload Video")

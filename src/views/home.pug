@@ -1,0 +1,10 @@
+extends layout.pug
+include mixin/video
+
+block content
+        each videoitem in videos
+            +video(videoitem)
+        else
+            h1 Sorry nothing found
+
+
