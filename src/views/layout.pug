@@ -36,6 +36,8 @@ html(lang="ko")
         main
             block content
         include partials/footer.pug
+    script(src="/static/js/main.js") 
+
     //app.use("/static",express.static("assets")) <- 이거때문에 아래와같이 스크립트를 이용해줄 수있다
     block scripts
-        script(src="/static/js/main.js") 
+       

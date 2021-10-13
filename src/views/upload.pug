@@ -2,6 +2,9 @@ extends layout.pug
 
 
 block content
+    div
+        video#preview
+        button#startBtn Start recording
     if errorMessage
         span=errorMessage
     form(method="POST",enctype="multipart/form-data")
@@ -11,3 +14,5 @@ block content
         input(placeholder="Description",required,type="text",name="description")
         input(placeholder="hashtag,separated by comma",required,type="text",name="hashtags")
         input(type="submit",value="Upload Video")
+block scripts 
+    script(src="/static/js/recoder.js") 

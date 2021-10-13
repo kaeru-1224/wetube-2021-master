@@ -4,8 +4,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports={
     //변경하고자하는 파일
-    entry:{main:"./src/client/js/main.js",
-        videoPlayer :"./src/client/js/videoPlayer.js"},
+    entry:{
+        main:"./src/client/js/main.js",
+        videoPlayer :"./src/client/js/videoPlayer.js",
+        recoder:"./src/client/js/recoder.js"},
     //MiniCssExtractPlugin:js 파일에서  css를 별개의 파일로 분리해줌
     plugins: [new MiniCssExtractPlugin({filename:"css/styles.css",})],
    //모드: 개발자 -production이 있는데 production이 더 압축적이며 설치시  디폴트 값으로 되어있다  

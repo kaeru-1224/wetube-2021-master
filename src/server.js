@@ -49,9 +49,7 @@ app.use(session({
     saveUninitialized:true}))
 app.use(express.urlencoded({extended:true}));
 
-app.use((req,res,next)=> {
-    req.sessionStore.all((error,sessions)=>{console.log(sessions); next()})
-})
+
 
 app.use(localMiddleware)
 //express.static()폴더를 노출시켜줌: 폴더 내의 파일을 볼수잇게 해줌(어떻게?)
