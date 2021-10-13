@@ -4,7 +4,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports={
     //변경하고자하는 파일
-    entry:"./src/client/js/main.js",
+    entry:{main:"./src/client/js/main.js",
+        videoPlayer :"./src/client/js/videoPlayer.js"},
     //MiniCssExtractPlugin:js 파일에서  css를 별개의 파일로 분리해줌
     plugins: [new MiniCssExtractPlugin({filename:"css/styles.css",})],
    //모드: 개발자 -production이 있는데 production이 더 압축적이며 설치시  디폴트 값으로 되어있다  
@@ -16,7 +17,7 @@ module.exports={
     //path: 저장할장소
     output:{
         // 기본 파일이름에 경로명을 추가해서 세부적으로 저장될 위치를 변경해줄 수있다 
-        filename:"js/main.js",
+        filename:"js/[name].js",
         path:path.resolve(__dirname,"assets"),
         clean:true,
     },

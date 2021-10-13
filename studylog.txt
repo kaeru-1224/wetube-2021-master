@@ -358,3 +358,22 @@ console.log(path.resolve(__dirname,"assets","js"));
 
 
  "assets": "webpack 이라 스크립트를 만들어주면 알아서  con fig를 찾음 
+
+
+
+
+10/12  
+
+loaded meta data event 
+--> meta data 가  loaded 될 때실행됨 
+?meta data? 
+--> 비디오를 제외한 모든것( 비디오의 크기, 시간등을 의미 , 비디오에서 움직이는 영상 자체를  제외한 모든것 )
+
+?duration(의미는 지속되다)
+->read-only 로 받을수만 있고 수정이 불가능
+(read-only?)
+
+-timeupdat:. 현재 시간(currenTime ) 속성이 변경되는 시점에 발생
+-currenTime 속성의 경으ㅜ 비디오업데이트(비디오가 계속 재생이될때마다)계속 바뀜 
+
+!Date()

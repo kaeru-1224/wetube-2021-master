@@ -2,10 +2,30 @@ extends layout.pug
 
 
 block content
-    video(src="/"+video.fileUrl,controls)
+    div#videoContainer
+        video(src="/"+video.fileUrl,controls)
+        div#videoControls
+            button#play Play 
+            button#mute Mute
+            input(type="range" min="0" max="1" step="0.1" value="0.5")#volume
+            div 
+                span#currenTime 00:00
+                span /
+                span#totalTime 00:00
+            div 
+                input(type="range" min="0" value=0 step="1")#timeline
+            div
+                button#fullScreen FullScreen
+
+        
+//-
     div
         h3=video.title
         small=video.description
     a( href = `${video.id}/edit`) Edit Video &rarr;
     hr
     a( href = `${video.id}/delete`) Delete Video &rarr;
+
+
+block scripts 
+    script(src="/static/js/videoPlayer.js") 
