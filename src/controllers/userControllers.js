@@ -60,7 +60,7 @@ export const postLogin =async (req,res)=> {
 
     //비밀번호 일치하는지확인
     // 해싱된 값을 알고있으므로, 입력 받은 값을 다시 해싱해서 그 값과 비교를 해주면됨 
-    
+    //
 
     const ok = await  bcrypt.compare(password,user.password);
     if(!ok){  return res.status(400).render("login",{pageTitle,errorMessage:"Wrong password"})}
