@@ -4,9 +4,12 @@ import "./models/Video"
 import {localMiddleware } from"./middleware";
 import morgan from "morgan";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import videoRouter from "./routers/videoRouters";
 import userRouter from"./routers/userRouters";
 import rootRouter from "./routers/rootRouter";
+import { connection } from "mongoose";
+
 
 
 const app= express();
@@ -41,13 +44,19 @@ handle은  response로 받아주고 끝나는데,middlewares는  request와  res
 app.set("view engine","pug")
 app.set("views",process.cwd()+"/src/views")
 
+
+
+app.use(express.urlencoded({extended:true}));
 //웹사이트에 들어온 사람들을 기억: 세션이 id를통해 브라우저를 기억하도록 도와주므로, 세션에 정보를 넣을 수 있음
 // 서버가 브라우저에게 서버 아이디를 줌
 app.use(session({
-    secret:"Hello!",
-    resave:true,
-    saveUninitialized:true}))
-app.use(express.urlencoded({extended:true}));
+    secret:process.env.COOKIE_SECRET,
+    resave: false,
+    saveUninitialized:false,
+    store:MongoStore.create({
+        client:connection.client,
+        mongoUrl:process.env.DB_URL}),}))
+
 
 
 

@@ -1,5 +1,7 @@
 import User from"../models/User"
 import bcrypt from "bcrypt"
+import fetch from "node-fetch";
+import { async } from "regenerator-runtime";
 
 
 
@@ -43,11 +45,13 @@ export const postJoin= async (req,res)=> {
 //로그인
 export const getLogin =(req,res)=>{res.render("login",{pageTitle:"Login"});}
 
+
+
 //로켓펀치
 
 export const postLogin =async (req,res)=> {
     const {username,password}=req.body;
-    const user = await User.findOne({username})
+    const user = await User.findOne({username, githubLoginOnly:false})
     const pageTitle="Login"
     if(!user){
         return res.status(400).render("login",{pageTitle,errorMessage:"An account with this username dosent exist"})
@@ -101,9 +105,84 @@ req
     - 
 */
 
+export const startGithubLogin= (req,res)=>{
+    const baseUrl=`https://github.com/login/oauth/authorize`
+    const config ={
+
+        client_id:process.env.GHCLIENT_ID,
+        allow_signup:false,
+        scope:"read:user user:email"
+    }
+    const params= new URLSearchParams(config).toString()
+    const finalUrl=`${baseUrl}?${params}`;
+    return res.redirect(finalUrl)
+
+}
+
+export const callbackGithubLogin = async (req,res)=>{
+    const baseUrl=`https://github.com/login/oauth/access_token`
+    const config={
+        client_id:process.env.GHCLIENT_ID,
+        client_secret:process.env.GHCLIENT_SECRETS,
+        code:req.query.code
+
+    }
+    const params = new URLSearchParams(config).toString()
+    const finalUrl = `${baseUrl}?${params}`
+    //send post req
+    const tokenRequest =await( await fetch(finalUrl,{
+        method:"POST",
+    headers:{Accept: "application/json"},})).json()
+    //토큰을 두번사용할수없다?
+    //access_tokend은 scope에서 명시한 부분까지 유저가 사용할 수있도록해줌
+    if("access_token" in tokenRequest){
+        const  {access_token}=tokenRequest;
+        const apiURL= "https://api.github.com"
+        const userData = await(await fetch(`${apiURL}/user`,{
+            headers:{
+                Authorization :`token ${access_token}`
+            }
+        })).json()
+const emailData =await( await fetch(`${apiURL}/user/emails`,{
+    headers:{
+        Authorization :`token ${access_token}`
+    }
+})).json();
+//왜 primary하고 .verified해야하는거지?
+const emailObj = emailData.find((email)=>email.primary===true && email.verified===true)
+console.log(emailObj);
+if(!emailObj){return res.redirect("/login")}
+const checkUser = await User.findOne({ email:emailObj.email })
+if(checkUser){   
+    req.session.loggedIn= true; 
+    req.session.user=checkUser
+return res.redirect("/")}
+else{
+
+    const user = await User.create({
+        email: userData.email,
+        username: userData.login,
+        password:"",
+        name: userData.name,
+        location: userData .location,
+        githubLoginOnly:true
+        
+    });
+    req.session.loggedIn= true; 
+    req.session.user=user
+    return res.redirect("/")    
+
+}
+    }else{return res.redirect("/login")}
+    
+}
+
+
+
 export const deleteUser =(req,res)=>res.send("delete user");
 
 export const see =(req,res)=>res.send("see");
 export const logout= (req,res)=>res.send("logout")
 
 // sudo apt-get install net-tools
+
