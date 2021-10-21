@@ -1,4 +1,5 @@
 //서버 작동파일
+import regeneratorRuntime from "regenerator-runtime";
 import "dotenv/config";
 import "./db";
 import "./models/Video";

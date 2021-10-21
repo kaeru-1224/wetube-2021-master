@@ -1,7 +1,7 @@
 const videoContaienr = document.getElementById("videoContainer");
 const form = document.getElementById("commentForm");
-const textarea = document.querySelector("textarea");
-const commentBtn = document.getElementById("addComment");
+const textarea = form.querySelector("textarea");
+const commentBtn = form.getElementById("addComment");
 
 const addComment = (event) => {
   //preventDefault()?
