@@ -19,9 +19,14 @@ block content
     div
         h3=video.title
         small=video.description
-    a( href = `${video.id}/edit`) Edit Video &rarr;
+        small=video.createdAt
+    div
+        small Uploaded by #{owner.name}
     hr
-    a( href = `${video.id}/delete`) Delete Video &rarr;
+    if String(video.owner)===String(loggedInUser._id)
+        a( href = `${video.id}/edit`) Edit Video &rarr;
+        hr
+        a( href = `${video.id}/delete`) Delete Video &rarr;
     div.video__comments
         form.video_comments-form#commentForm
             textarea(cols="30",row="10",placeholder="Write a nice comment")

@@ -14,17 +14,17 @@ const videoSchema = new mongoose.Schema({
   meta: {
     views: { type: Number, default: 0, required: true },
     rating: { type: Number, default: 0, required: true },
-    owner: {
-      //mongoose.Schema.Types.ObjectId <--  이렇게 진행되는 원인이뭐지?
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      //ref: 연결할 모델
-      ref: "User",
-    },
-    comments: [
-      { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Comment" },
-    ],
   },
+  owner: {
+    //mongoose.Schema.Types.ObjectId <--  이렇게 진행되는 원인이뭐지?
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    //ref: 연결할 모델
+    ref: "User",
+  },
+  comments: [
+    { type: mongoose.Schema.Types.ObjectId, required: true, ref: "Comment" },
+  ],
 });
 
 //{type: String} ==  Stirng 이것도 객체 그거였나?

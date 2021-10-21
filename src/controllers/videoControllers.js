@@ -1,4 +1,5 @@
 import Video from "../models/Video";
+import User from "../models/User";
 
 export const home = async (req, res) => {
   const videos = await Video.find({}).sort({ createdAt: "desc" });
@@ -9,10 +10,15 @@ export const watch = async (req, res) => {
   const { id } = req.params;
   //비디오 객체를 받아줌,그리고 여기서 우리는 video 객체를 보내주어야하므로   findby~가 더 정확함
   const video = await Video.findById(id);
+  const owner = await User.findById(video.owner);
   if (video === null) {
     return res.status(404).render("404", { pageTitle: "Video not found" });
   }
-  return res.render("watch", { pageTitle: `${video.title}`, video });
+  return res.render("watch", {
+    pageTitle: `${video.title}`,
+    video,
+    owne: owner.name,
+  });
 };
 //search
 //params? query? 차이가 뭐지?
