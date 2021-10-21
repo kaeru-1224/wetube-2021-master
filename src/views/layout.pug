@@ -14,12 +14,15 @@ html(lang="ko")
                     li
                         a(href="/") Home!
                     if loggedIn
+                        li
+                            a(href="/video/upload") upload
                         li 
                             a(href="/user/edit") Edit profile
+                        li
+                            a(href=`/user/${loggedInUser._id}`) My Profile
+
                         li 
-                            a(href="/logout") log out 
-                        li 
-                            a(href="/my-profile") #{loggedInUser.name}'s  profile
+                            a(href="/user/logout") log out 
                     else 
                         li
                             a(href="/join") join

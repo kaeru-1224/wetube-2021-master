@@ -2,7 +2,7 @@ extends layout.pug
 
 
 block content
-    div#videoContainer
+    div#videoContainer(data-id=video.id)
         video(src="/"+video.fileUrl,controls)
         div#videoControls
             button#play Play 
@@ -16,16 +16,18 @@ block content
                 input(type="range" min="0" value=0 step="1")#timeline
             div
                 button#fullScreen FullScreen
-
-        
-//-
     div
         h3=video.title
         small=video.description
     a( href = `${video.id}/edit`) Edit Video &rarr;
     hr
     a( href = `${video.id}/delete`) Delete Video &rarr;
+    div.video__comments
+        form.video_comments-form#commentForm
+            textarea(cols="30",row="10",placeholder="Write a nice comment")
+            button#addComment Add Comment
 
 
 block scripts 
     script(src="/static/js/videoPlayer.js") 
+    script(src="/static/js/commentSection.js") 
